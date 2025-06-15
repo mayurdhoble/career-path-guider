@@ -1,0 +1,39 @@
+# Ignore virtual environment folder
+env/
+ENV/
+.venv/
+venv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VSCode/IDE settings
+.vscode/
+.idea/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables file
+.env
+*.env
+
+# Pytest cache
+.pytest_cache/
+
+# Logs and coverage
+*.log
+coverage/
+htmlcov/
+
+# Compiled C files
+*.so
+
+# Mac system files
+*.DS_Store

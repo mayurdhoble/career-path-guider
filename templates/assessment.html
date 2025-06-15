@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Career Assessment</h2>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressBar" style="width: 10%"></div>
+    </div>
+    <p>Question <span id="questionNumber">1</span> of {{ questions|length }}</p>
+</div>
+
+<div class="card question-card" id="questionCard">
+    <h3 id="questionText">{{ questions[0] }}</h3>
+    <textarea id="responseText" placeholder="Share your thoughts..."></textarea>
+    <div style="margin-top: 20px;">
+        <button class="btn" onclick="nextQuestion()">Next Question</button>
+    </div>
+</div>
+
+<div id="loadingCard" class="card loading" style="display: none;">
+    <div class="spinner"></div>
+    <p style="margin-top: 20px;">Analyzing your responses...</p>
+</div>
+
+<div id="resultsCard" class="card" style="display: none;">
+    <h2>Your Career Matches</h2>
+    <div id="careerMatches"></div>
+</div>
+
+<script>
+const questions = {{ questions | tojson }};
+let currentQuestion = 0;
+const responses = {};
+
+function updateProgress() {
+    const progress = ((currentQuestion + 1) / questions.length) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('questionNumber').textContent = currentQuestion + 1;
+}
+
+function nextQuestion() {
+    const response = document.getElementById('responseText').value.trim();
+    if (!response) {
+        alert('Please provide a response before continuing.');
+        return;
+    }
+    
+    // Save response
+    fetch('/submit_response', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            question_index: currentQuestion,
+            response: response
+        })
+    });
+    
+    currentQuestion++;
+    
+    if (currentQuestion < questions.length) {
+        // Show next question
+        document.getElementById('questionText').textContent = questions[currentQuestion];
+        document.getElementById('responseText').value = '';
+        updateProgress();
+    } else {
+        // Show loading and get recommendations
+        document.getElementById('questionCard').style.display = 'none';
+        document.getElementById('loadingCard').style.display = 'block';
+        getRecommendations();
+    }
+}
+
+function getRecommendations() {
+    fetch('/get_recommendations', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('loadingCard').style.display = 'none';
+        showResults(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Something went wrong. Please try again.');
+    });
+}
+
+function showResults(data) {
+    const resultsCard = document.getElementById('resultsCard');
+    const matchesDiv = document.getElementById('careerMatches');
+    
+    let html = '';
+    data.career_matches.forEach(match => {
+        html += `
+            <div class="career-match">
+                <h3>${match.data.title}</h3>
+                <p>${match.data.description}</p>
+                <p><strong>Match Score:</strong> ${(match.score * 100).toFixed(1)}%</p>
+                <button class="btn" onclick="viewRoadmap('${match.path}')">
+                    Get 3-Month Roadmap
+                </button>
+            </div>
+        `;
+    });
+    
+    matchesDiv.innerHTML = html;
+    resultsCard.style.display = 'block';
+}
+
+function viewRoadmap(careerPath) {
+    window.location.href = `/roadmap/${careerPath}`;
+}
+
+// Initialize
+updateProgress();
+</script>
+{% endblock %}

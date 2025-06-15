@@ -1,0 +1,48 @@
+
+<!-- templates/roadmap.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h1>🎯 Your {{ career_path }} Career Roadmap</h1>
+    <p style="color: #666; margin-bottom: 30px;">
+        Your personalized 3-month action plan with free resources
+    </p>
+</div>
+
+<div class="card">
+    <div id="roadmapContent">
+        {{ roadmap | safe }}
+    </div>
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <button class="btn" onclick="window.print()">📄 Print Roadmap</button>
+        <button class="btn" onclick="window.location.href='/'">🔄 Take Assessment Again</button>
+    </div>
+</div>
+
+<style>
+#roadmapContent {
+    line-height: 1.6;
+}
+
+#roadmapContent h3 {
+    color: #667eea;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+#roadmapContent ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+#roadmapContent li {
+    margin-bottom: 8px;
+}
+
+@media print {
+    body { background: white; }
+    .btn { display: none; }
+}
+</style>
+{% endblock%}

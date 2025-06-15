@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h1>🚀 Find Your Perfect Career Path</h1>
+    <p style="font-size: 18px; color: #666; margin-bottom: 30px;">
+        Discover careers that match your interests and get a personalized 3-month roadmap with free resources!
+    </p>
+    
+    <div style="text-align: center;">
+        <button class="btn" onclick="startAssessment()">Start Career Assessment</button>
+    </div>
+    
+    <div style="margin-top: 40px;">
+        <h3>What You'll Get:</h3>
+        <ul style="list-style: none; padding-left: 20px;">
+            <li style="margin: 10px 0;">✅ AI-powered career matching</li>
+            <li style="margin: 10px 0;">📚 Personalized 3-month learning roadmap</li>
+            <li style="margin: 10px 0;">🆓 Curated free resources and courses</li>
+            <li style="margin: 10px 0;">🎯 Step-by-step action plan</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function startAssessment() {
+    window.location.href = '/assessment';
+}
+</script>
+{% endblock %}
